@@ -12,7 +12,7 @@ style.use('ggplot')
 
 quandl.ApiConfig.api_key = '9U6i-WCqzgcfFq86cQ93'#my quandl key
 
-df = quandl.get('WIKI/GOOGL')#can be changed to any other stock
+df = quandl.get('WIKI/AAPL')#can be changed to any other stock
 
 df = df[['Adj. Open','Adj. High','Adj. Low','Adj. Close','Adj. Volume']]    #creating our own chart
 df['HL_PCT']= (df['Adj. High']-df['Adj. Close']) / df['Adj. Close'] *100.0  #calculating high-low percent (percent volatility)
@@ -31,7 +31,7 @@ df['label']= df[forecast_col].shift(-forecast_out)  #label is the forecast col s
 
 
 
-X = np.array(df.drop(['label', 'Adj. Close'],1)) #X is feature (input)
+X = np.array(df.drop(['label'],1)) #X is feature (input)
 X = preprocessing.scale(X) #data is very spread out, so might be skewed. scaling values normalizes it
 X_lately = X[-forecast_out:] # ":" means to the point of... this reads X to the point of negative forecast_out
 X = X[:-forecast_out] #X_lately is what we predict against, the last 35 days
@@ -68,6 +68,7 @@ for i in forecast_set:
     df.loc[next_date] = [np.nan for _ in range(len(df.columns)-1)] + [i]
 
 print(df.tail())
+print(accuracy)
 
 df['Adj. Close'].plot()
 df['Forecast'].plot()
@@ -75,17 +76,3 @@ plt.legend(loc=4)
 plt.xlabel('Date')
 plt.ylabel('Price')
 plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
